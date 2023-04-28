@@ -1,5 +1,8 @@
 """SignBankWithImages dataset."""
 import json
+import os
+
+import boto3
 
 import tensorflow as tf
 import tensorflow_datasets as tfds
@@ -25,6 +28,16 @@ class SignBankWithImages(tfds.core.GeneratorBasedBuilder):
     RELEASE_NOTES = {
         "1.0.0": "Initial release.",
     }
+
+    def __init__(self, access_key: str, private_key: str, **kwargs):
+
+        super(SignBankWithImages, self).__init__(**kwargs)
+
+        self.client = boto3.client(
+            's3',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=private_key
+        )
 
     def _info(self) -> tfds.core.DatasetInfo:
         """Returns the dataset metadata."""
@@ -56,12 +69,12 @@ class SignBankWithImages(tfds.core.GeneratorBasedBuilder):
 
         return {
             "train": self._generate_examples(
-                samples=[key['Key'] for key in signbank_client.list_objects(Bucket=BUCKET_NAME)['Contents']]
+                samples=[key['Key'] for key in self.client.list_objects(Bucket=BUCKET_NAME)['Contents']]
             ),
         }
 
     def _generate_examples(self, samples: list[str]):
         for i, sample in enumerate(samples):
-            obj = signbank_client.get_object(Bucket=BUCKET_NAME, Key=sample)['Body'].read().decode('utf-8')
+            obj = self.client.get_object(Bucket=BUCKET_NAME, Key=sample)['Body'].read().decode('utf-8')
             obj = json.loads(obj)
             yield i, obj

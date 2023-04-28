@@ -14,7 +14,7 @@ setup(
     version="1.0.0",
     description="TFDS Datasets for sign writing language",
     author="Stav Elizur",
-    author_email="stavelizur@gmail.com",
+    author_email="stavelizur@cs.colman.ac.il",
     url="https://github.com/STAV-ELIZUR/CearingDatasets",
     keywords=[],
     long_description=long_description,
