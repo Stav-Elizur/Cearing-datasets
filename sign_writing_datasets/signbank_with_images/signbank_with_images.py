@@ -20,6 +20,7 @@ the ISWA 2010 Font Reference Library and the RAND Keyboard for SignWriting.
 """
 
 BUCKET_NAME = 'signwriting-images'
+PREFIX = 'dataset-outputs'
 
 class SignBankWithImages(tfds.core.GeneratorBasedBuilder):
     """DatasetBuilder for SignBank dataset."""
@@ -68,7 +69,7 @@ class SignBankWithImages(tfds.core.GeneratorBasedBuilder):
         dataset_warning(self)
 
         paginator = self.client.get_paginator('list_objects_v2')
-        page_iterator = paginator.paginate(Bucket=BUCKET_NAME)
+        page_iterator = paginator.paginate(Bucket=BUCKET_NAME, Prefix=PREFIX)
 
         def __yielder():
             for page in page_iterator:
